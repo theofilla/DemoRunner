@@ -1,0 +1,26 @@
+images - tick mark, wrong mark, timers, enter button
+fonts required. 
+----------------------
+Start button and get textbox for speed of the game (max: 300s/ 5 min), number of words (max : 100)(like difficulty level), memory timer - ( default: 300 s/ 5min, max: 20 mins) submit button overrides the timer if not submitter timer closes game and shows the result
+to initiate game
+ Show words, complete 
+then show the input text box
+ then input should start.
+enter button to enter each entry to be tested
+wrong if any wrong input is given and game stops and score is shown (score calculated via number of words rightly guessed) 
+
+Level based 
+----------------------
+//- not for now, if all inputs are correct, next level starts 
+//For every new level, word count increases by 3 and seconds to memorise decrease by 0.2. (??)
+//pause
+//retry
+-----------------------------------------------------
+words database
+randomize inputs
+
+---------------
+set timer
+set memory timer
+
+-----------------

@@ -1,0 +1,12 @@
+{
+  "ver": "1.0.1",
+  "importer": "ttf-font",
+  "imported": true,
+  "uuid": "7552c2f0-8fbd-45da-b4ee-b5a33b434863",
+  "files": [
+    ".json",
+    "chalkFont.ttf"
+  ],
+  "subMetas": {},
+  "userData": {}
+}
