@@ -1,6 +1,7 @@
 
-import { _decorator, BoxCollider2D, Collider, Input, input, EventKeyboard, EventTouch, KeyCode, Vec3, RigidBody, Component, RigidBody2D, Vec2, Label, director, ICollisionEvent, Contact2DType, dynamicAtlasManager } from 'cc';
+import { _decorator, BoxCollider2D, Collider, Input, input, EventKeyboard, EventTouch, KeyCode, Vec3, RigidBody, Component, RigidBody2D, Vec2, Label, director, ICollisionEvent, Contact2DType, dynamicAtlasManager, PolygonCollider2D } from 'cc';
 import { ObstaclesManager } from './ObstaclesManager';
+import { LifeManager } from './LifeManager';
 const { ccclass, property } = _decorator;
 
 @ccclass
@@ -36,11 +37,15 @@ export default class PlayerControl extends Component {
     @property({type:Vec3,visible: true})
     originalPosition: Vec3 = new Vec3(-450,-180,0);
     gameInPlay: boolean = true;
+
+    @property({type:LifeManager,visible: true})
+    lifemanager: LifeManager = null;
   
     onLoad()
     {
         //this.originalPosition = this.node.position;
         this.scheduleOnce(()=>{
+            this.lifemanager.resetLives();
             this.gameLabel.node.active = false;
         }, 1);
     }
@@ -48,7 +53,7 @@ export default class PlayerControl extends Component {
     
     start()
     {
-        let collider = this.node.getComponent(BoxCollider2D);
+        let collider = this.node.getComponent(PolygonCollider2D);
         collider.on('onCollisionEnter', this.onCollisionEnter, this);
         this.startPlay(1);
     }
@@ -87,12 +92,14 @@ export default class PlayerControl extends Component {
         console.log("Collision detected with:", event.otherCollider.node.name); 
         if(event.otherCollider.node.name == 'Obstacle'){
         this.lives--;
+        this.lifemanager.loseLife();
         this.node.position = this.originalPosition;
         if(this.lives <= 0)
         {
             this.gameLabel.node.active = true;
             this.gameLabel.string = 'Game Over';
             this.disablePlayer();
+            this.lifemanager.resetLives();
         }
         }
         // else if(event.otherCollider.node.name == 'Flag')
