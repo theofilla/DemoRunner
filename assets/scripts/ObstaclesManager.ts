@@ -28,7 +28,7 @@ export class ObstaclesManager extends Component {
     public spawnObstacle(level:number) {
 
         while(level > 0){
-        this.scheduleOnce(this.spawn, 0.5);
+        this.spawn();
         level--;
         }
        

@@ -1,5 +1,5 @@
 
-import { _decorator, BoxCollider2D, Collider, Input, input, EventKeyboard, EventTouch, KeyCode, Vec3, RigidBody, Component, RigidBody2D, Vec2, Label, director, ICollisionEvent, Contact2DType, dynamicAtlasManager, PolygonCollider2D } from 'cc';
+import { _decorator, BoxCollider2D, Collider, Input, input, EventKeyboard, EventTouch, KeyCode, Vec3, RigidBody, Component, RigidBody2D, Vec2, Label, director, ICollisionEvent, Contact2DType, dynamicAtlasManager, PolygonCollider2D, AudioSource } from 'cc';
 import { ObstaclesManager } from './ObstaclesManager';
 import { LifeManager } from './LifeManager';
 const { ccclass, property } = _decorator;
@@ -22,6 +22,15 @@ export default class PlayerControl extends Component {
 
     @property
     lives: number = 5;
+
+    @property({type:AudioSource,visible: true})
+    running: AudioSource= null;
+
+    @property({type:AudioSource,visible: true})
+    jump: AudioSource= null;
+
+    @property({type:AudioSource,visible: true})
+    startSnd: AudioSource= null;
 
     @property(Label)
     gameLabel: Label = null;
@@ -47,6 +56,8 @@ export default class PlayerControl extends Component {
         this.scheduleOnce(()=>{
             this.lifemanager.resetLives();
             this.gameLabel.node.active = false;
+            this.startSnd.play();
+           
         }, 1);
     }
     
@@ -71,8 +82,7 @@ export default class PlayerControl extends Component {
     startPlay(level: number)
     {
         this.obstacleMan.clearObstacles();
-       
-        this.gameInPlay = true;
+    
         this.gameLabel.node.active = true;
         this.gameLabel.string = 'Level ' + level;
         this.scheduleOnce
@@ -90,6 +100,12 @@ export default class PlayerControl extends Component {
     {
         // Access the other colliding object through 'event.otherCollider'
         console.log("Collision detected with:", event.otherCollider.node.name); 
+        if(this.jump){
+          this.jump.play();
+          if(this.running){
+                this.running.stop();
+          }
+        }
         if(event.otherCollider.node.name == 'Obstacle'){
         this.lives--;
         this.lifemanager.loseLife();
@@ -110,7 +126,6 @@ export default class PlayerControl extends Component {
 
     nextLevel()
     {
-        if(this.gameInPlay ) return;
         this.level += 1;
         this.startPlay(this.level);
     }
@@ -153,6 +168,10 @@ export default class PlayerControl extends Component {
                 break;
             case KeyCode.ARROW_RIGHT:
                 this._rightPressed = false;
+                if(this.running){
+                    this.running.stop();
+                }
+
                 break;
             case KeyCode.ARROW_UP:
                 this._upPressed = false;
@@ -180,9 +199,15 @@ export default class PlayerControl extends Component {
         }
 
         if (this._rightPressed) {
+
+            if(this.running){
+                this.running.stop();
+                this.running.play();
+          }
             pos += this.speed * dt;
             if(pos >= this.maxX){
                 this.node.setPosition(this.originalPosition)
+                this.nextLevel();
             }
             else{
                 this.node.setPosition(new Vec3(pos, this.node.position.y, this.node.position.z));

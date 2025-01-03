@@ -1,4 +1,4 @@
-import { _decorator, BoxCollider2D, Collider, ColliderComponent, Component, ICollisionEvent, PolygonCollider2D } from "cc";
+import { _decorator, BoxCollider, Component, ICollisionEvent, PolygonCollider2D } from "cc";
 
 const { ccclass, property } = _decorator;
 
